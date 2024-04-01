@@ -3,12 +3,15 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from forms import LoginForm
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
 limiter = Limiter(key_func=get_remote_address, app=app)
-db = SQLAlchemy()
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 @app.route('/')
