@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Finance Tracker</title>
+    <div>
+        {% if current_user.is_anonymous %}
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('registration') }}">Register</a>
+        {% else %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% endif %}
+    </div>
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+</body>
+</html>

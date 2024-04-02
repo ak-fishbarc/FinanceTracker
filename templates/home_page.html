@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "base.html" %}
+</head>
+<body>
+    {% block body %}
+        {% if current_user.is_anonymous %}
+            <p> This is the first paragraph </p>
+        {% else %}
+            <p> Hello {{ current_user.username }}</p>
+        {% endif%}
+    {% endblock %}
+</body>
+</html>
