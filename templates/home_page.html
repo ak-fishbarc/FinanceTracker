@@ -5,7 +5,11 @@
 </head>
 <body>
     {% block body %}
-    <p> This is the first paragraph </p>
+        {% if current_user.is_anonymous %}
+            <p> This is the first paragraph </p>
+        {% else %}
+            <p> Hello {{ current_user.username }}</p>
+        {% endif%}
     {% endblock %}
 </body>
 </html>

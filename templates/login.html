@@ -7,6 +7,15 @@
     {% block body %}
     <h1>Login:</h1>
     <form action="" method="post" novalidate>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li style="color: red;">[{{ message }}]</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %}
         {{ form.hidden_tag() }}
         <div>
             {{ form.username.label }}

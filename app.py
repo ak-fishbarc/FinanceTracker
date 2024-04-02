@@ -5,7 +5,7 @@ from config import Config
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager, current_user, login_user, logout_user
 from forms import LoginForm
 import models
 
@@ -23,7 +23,7 @@ def home_page():
 
 
 @app.route('/login', methods=['POST', 'GET'])
-@limiter.limit("5 per minute")
+@limiter.limit("5 per second")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('home_page'))
@@ -36,6 +36,12 @@ def login():
         login_user(user)
         return redirect(url_for('home_page'))
     return render_template("login.html", form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home_page'))
 
 
 @app.route('/register', methods=['POST', 'GET'])
