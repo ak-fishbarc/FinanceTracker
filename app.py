@@ -67,11 +67,15 @@ def registration():
     return render_template('registration.html', form=form)
 
 
-@app.route('/expense')
+@app.route('/post_expense', methods=['POST', 'GET'])
 @login_required
 def post_expense():
-    models.add_expense(current_user.username, 'Furniture', 'Table4', '30£', '02.04.2024')
-    return "Added to expenses"
+    form = forms.ExpenseForm()
+    if form.validate_on_submit():
+        models.add_expense(current_user.username, form.category.data, form.item.data,
+                           form.price.data, form.expense_date.data)
+        return redirect(url_for('post_expense'))
+    return render_template('post_expense.html', form=form)
 
 
 @app.errorhandler(429)
