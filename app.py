@@ -5,15 +5,17 @@ from config import Config
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, current_user, login_user, logout_user
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import models
 import forms
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 app.config.from_object(Config)
 limiter = Limiter(key_func=get_remote_address, app=app)
 db = SQLAlchemy(app)
+db2 = PyMongo(app).db
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -63,6 +65,13 @@ def registration():
         flash('Registration was successful')
         return redirect(url_for('login'))
     return render_template('registration.html', form=form)
+
+
+@app.route('/expense')
+@login_required
+def post_expense():
+    models.add_expense(current_user.username, 'Furniture', 'Table4', '30£', '02.04.2024')
+    return "Added to expenses"
 
 
 @app.errorhandler(429)
