@@ -32,3 +32,10 @@ class RegistrationForm(FlaskForm):
             if user is not None:
                 raise ValidationError('Invalid Email')
 
+
+class ExpenseForm(FlaskForm):
+    category = StringField('Category', validators=[DataRequired()])
+    item = StringField('Item', validators=[DataRequired()])
+    price = StringField('Price', validators=[DataRequired()])
+    expense_date = StringField('Date', validators=[DataRequired()])
+    submit = SubmitField('Add Expense')
