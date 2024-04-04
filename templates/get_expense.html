@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "base.html" %}
+</head>
+<body>
+    {% block body %}
+        <table border="1px solid black">
+        <tr>
+            <th>Category</th>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Date</th>
+        </tr>
+        {% for datum in data %}
+            <tr>
+                <th>{{ datum.category }}</th>
+                <th>{{ datum.item }}</th>
+                <th>{{ datum.price }}</th>
+                <th>{{ datum.date }}</th>
+                <th><a href="{{ url_for('update_expense', expense_id=datum._id) }}">Update Expense</a></th>
+                <th><a href="{{ url_for('delete_expense') }}">Delete Expense</a></th>
+            </tr>
+        {% endfor %}
+        </table>
+    {% endblock %}
+</body>
+</html>

@@ -7,15 +7,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
+from flask_pymongo import PyMongo
 import models
 import forms
-from flask_pymongo import PyMongo
+import bson
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
 limiter = Limiter(key_func=get_remote_address, app=app)
 db = SQLAlchemy(app)
-db2 = PyMongo(app).db
+db2 = PyMongo(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -76,6 +78,29 @@ def post_expense():
                            form.price.data, form.expense_date.data)
         return redirect(url_for('post_expense'))
     return render_template('post_expense.html', form=form)
+
+
+@app.route('/get_expense')
+@login_required
+def get_expense():
+    expense_db = db2.cx['expenses']
+    data = expense_db[current_user.username].find()
+    return render_template('get_expense.html', data=data)
+
+
+@app.route('/update_expense/<expense_id>')
+@login_required
+def update_expense(expense_id):
+    expense_db = db2.cx['expenses']
+    datum = expense_db[current_user.username].find_one_or_404({"_id": bson.ObjectId(expense_id)})
+    form = forms.ExpenseForm()
+    return render_template('update_expense.html', form=form, datum=datum)
+
+
+@app.route('/delete_expense')
+@login_required
+def delete_expense():
+    pass
 
 
 @app.errorhandler(429)

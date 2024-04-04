@@ -1,4 +1,4 @@
-from app import app, db, db2
+from app import db, db2
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -22,5 +22,6 @@ class User(UserMixin, db.Model):
 
 
 def add_expense(username, category, item, price, date):
+    expense_db = db2.cx['expenses']
     expense = {'category': category, 'item': item, 'price': price, 'date': date}
-    return db2[username].insert_one(expense)
+    return expense_db[username].insert_one(expense)
