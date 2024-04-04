@@ -25,3 +25,8 @@ def add_expense(username, category, item, price, date):
     expense_db = db2.cx['expenses']
     expense = {'category': category, 'item': item, 'price': price, 'date': date}
     return expense_db[username].insert_one(expense)
+
+
+def delete_expense(username, expense_id):
+    expense_db = db2.cx['expenses']
+    return expense_db[username].delete_one({"_id": expense_id})

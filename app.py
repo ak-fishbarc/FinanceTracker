@@ -97,10 +97,12 @@ def update_expense(expense_id):
     return render_template('update_expense.html', form=form, datum=datum)
 
 
-@app.route('/delete_expense')
+@app.route('/delete_expense/<expense_id>')
 @login_required
-def delete_expense():
-    pass
+def delete_expense(expense_id):
+    expense_id = bson.ObjectId(expense_id)
+    models.delete_expense(current_user.username, expense_id)
+    return redirect(url_for('get_expense'))
 
 
 @app.errorhandler(429)
