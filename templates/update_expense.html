@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "base.html" %}
+</head>
+<body>
+    {% block body %}
+        <h1>Update Expense</h1>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.category.label }}
+                {{ form.category(value=datum.category, size=16) }}
+                {% for error in form.category.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.item.label }}
+                {{ form.item(value=datum.item, size=16) }}
+                {% for error in form.item.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.price.label }}
+                {{ form.price(value=datum.price, size=16) }}
+                {% for error in form.price.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.expense_date.label }}
+                {{ form.expense_date(value=datum.date, size=16) }}
+                {% for error in form.expense_date.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    {% endblock %}
+</body>
+</html>
