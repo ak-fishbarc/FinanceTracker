@@ -88,12 +88,17 @@ def get_expense():
     return render_template('get_expense.html', data=data)
 
 
-@app.route('/update_expense/<expense_id>')
+@app.route('/update_expense/<expense_id>', methods=['POST', 'GET'])
 @login_required
 def update_expense(expense_id):
     expense_db = db2.cx['expenses']
     datum = expense_db[current_user.username].find_one_or_404({"_id": bson.ObjectId(expense_id)})
     form = forms.ExpenseForm()
+    if form.validate_on_submit():
+        expense_db[current_user.username].update_one({"_id": bson.ObjectId(expense_id)},
+                                                     {"$set": {"category": form.category.data, "item": form.item.data,
+                                                      "price": form.price.data, "expense_date": form.expense_date.data}})
+        return redirect(url_for('get_expense'))
     return render_template('update_expense.html', form=form, datum=datum)
 
 
