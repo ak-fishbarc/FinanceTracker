@@ -11,7 +11,7 @@ from flask_pymongo import PyMongo
 import models
 import forms
 import bson
-
+from errors import errors_blueprint
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -22,6 +22,7 @@ migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+app.register_blueprint(errors_blueprint(app, db))
 
 @app.route('/')
 @app.route('/home_page')
@@ -108,23 +109,6 @@ def delete_expense(expense_id):
     expense_id = bson.ObjectId(expense_id)
     models.delete_expense(current_user.username, expense_id)
     return redirect(url_for('get_expense'))
-
-
-@app.errorhandler(429)
-def rate_limit_handler(error):
-    return render_template('429.html'), 429
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html'), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    with app.app_context():
-        db.session.rollback()
-        return render_template('500.html'), 500
 
 
 @login_manager.user_loader
