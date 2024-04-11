@@ -2,4 +2,7 @@ venv
 .idea/
 __pycache__/
 migrations
-
+.env
+db
+db2
+.dockerignore

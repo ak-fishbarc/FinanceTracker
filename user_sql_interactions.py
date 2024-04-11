@@ -3,11 +3,10 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user
 import sqlalchemy
 from urllib.parse import urlsplit
-import models
 import forms
 
 
-def create_user_sql_interactions_blueprint(app, db, limiter):
+def create_user_sql_interactions_blueprint(app, db, user_model, limiter):
 
     user_sql_interactions_blueprint = Blueprint('user_sql_interactions', __name__, template_folder='templates')
 
@@ -18,7 +17,7 @@ def create_user_sql_interactions_blueprint(app, db, limiter):
             return redirect(url_for('home_page'))
         form = forms.LoginForm()
         if form.validate_on_submit():
-            user = db.session.scalar(sqlalchemy.select(models.User).where(models.User.username == form.username.data))
+            user = db.session.scalar(sqlalchemy.select(user_model).where(user_model.username == form.username.data))
             if user is None or not user.check_password(form.password.data):
                 flash('Invalid username or password')
                 return redirect(url_for('login'))
@@ -38,9 +37,9 @@ def create_user_sql_interactions_blueprint(app, db, limiter):
     def registration():
         if current_user.is_authenticated:
             return redirect(url_for('home_page'))
-        form = forms.RegistrationForm()
+        form = forms.create_registration_form(db, user_model)
         if form.validate_on_submit():
-            user = models.User(username=form.username.data, email=form.email.data)
+            user = user_model(username=form.username.data, email=form.email.data)
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
